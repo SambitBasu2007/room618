@@ -45,7 +45,7 @@ export class FirstPersonInput {
 
     // Mouse look
     document.addEventListener('mousemove', (e) => {
-      if (!this.locked) return;
+      if (!this.locked || !document.pointerLockElement) return;
       this.yaw -= e.movementX * this.sensitivity;
       this.pitch = Math.max(-LIMIT, Math.min(LIMIT, this.pitch - e.movementY * this.sensitivity));
     });
@@ -67,6 +67,7 @@ export class FirstPersonInput {
     this.dom.addEventListener('pointercancel', this.handleLookEnd);
     this.jumpEl?.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this.jumpButton = true;
     });
     this.jumpEl?.addEventListener('pointerup', () => { this.jumpButton = false; });
@@ -74,6 +75,7 @@ export class FirstPersonInput {
     this.jumpEl?.addEventListener('pointerleave', () => { this.jumpButton = false; });
     this.useEl?.addEventListener('pointerdown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this.useButton = true;
     });
     this.useEl?.addEventListener('pointerup', () => { this.useButton = false; });
@@ -82,8 +84,8 @@ export class FirstPersonInput {
   }
 
   lock() {
-    const r: unknown = this.dom.requestPointerLock();
-    if (r instanceof Promise) r.catch(() => { /* browsers refuse re-locking right after Esc; click again */ });
+    this.locked = true;
+    this.onLockChange?.(true);
   }
 
   startMobile() {
@@ -92,7 +94,7 @@ export class FirstPersonInput {
   }
 
   private handleLookDown = (e: PointerEvent) => {
-    if (!this.locked || e.pointerType === 'mouse') return;
+    if (!this.locked || e.pointerId === this.joystickPointer) return;
     this.lookPointer = e.pointerId;
     this.lastLookX = e.clientX;
     this.lastLookY = e.clientY;
@@ -114,17 +116,18 @@ export class FirstPersonInput {
   };
 
   private handleJoystickDown = (e: PointerEvent) => {
-    if (this.locked) return;
     this.joystickPointer = e.pointerId;
     this.joystickEl?.setPointerCapture(e.pointerId);
     this.joystick.active = true;
     this.updateJoystick(e);
+    e.stopPropagation();
     e.preventDefault();
   };
 
   private handleJoystickMove = (e: PointerEvent) => {
     if (e.pointerId !== this.joystickPointer) return;
     this.updateJoystick(e);
+    e.stopPropagation();
     e.preventDefault();
   };
 
