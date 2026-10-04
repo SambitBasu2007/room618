@@ -26,7 +26,7 @@ export class Player {
   readonly eye = 9.4;
   walkSpeed = 4 * Player.sizeScale;
   runSpeed = 7 * Player.sizeScale;
-  jumpSpeed = 7 * Math.sqrt(Player.sizeScale);
+  jumpSpeed = 12 * Math.sqrt(Player.sizeScale); // apex is ~3.6 world units at the 10-unit player scale
   gravity = 20 * Player.sizeScale;
   private readonly spawn = new THREE.Vector3();
   private readonly seg = new THREE.Line3();
