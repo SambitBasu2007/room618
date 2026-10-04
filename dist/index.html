@@ -31,6 +31,12 @@
     touch-action: none;
   }
   .mobile-btn:hover, .mobile-btn:active { background: rgba(65,80,105,.58); }
+  .mobile-btn:focus { outline: none; }
+  .mobile-btn, #joystick, #joystick-knob, #fullscreenBtn {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
   #fullscreenBtn {
     position: fixed;
     top: max(10px, env(safe-area-inset-top));
@@ -61,6 +67,8 @@
     height: 72px;
     font-size: 28px;
   }
+  #jumpBtn { transform: rotate(180deg); }
+  #jumpBtn:active { transform: rotate(180deg) scale(.94); }
   #joystick {
     position: fixed;
     bottom: max(20px, env(safe-area-inset-bottom));
@@ -131,6 +139,6 @@
     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
 <button id="useBtn" class="mobile-btn" aria-label="Use">🔧</button>
-<button id="jumpBtn" class="mobile-btn" aria-label="Jump">⤓</button>
+<button id="jumpBtn" class="mobile-btn" aria-label="Jump"><span aria-hidden="true">⤓</span></button>
 </body>
 </html>
