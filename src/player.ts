@@ -15,15 +15,15 @@ export interface MoveInput {
  * `pos` is the point at the FEET. Y is up, -Z is forward at yaw 0.
  */
 export class Player {
-  private static readonly sizeScale = 15 / 1.7;
+  private static readonly sizeScale = 10 / 1.7;
   readonly pos = new THREE.Vector3();
   readonly vel = new THREE.Vector3();
   onGround = false;
   collider: MeshBVH | null = null; // set by main whenever the world changes
   killY = -100;                    // fall below this and you respawn
   readonly radius = 0.3 * Player.sizeScale;
-  readonly height = 15;
-  readonly eye = 14.1;
+  readonly height = 10;
+  readonly eye = 9.4;
   walkSpeed = 4 * Player.sizeScale;
   runSpeed = 7 * Player.sizeScale;
   jumpSpeed = 7 * Math.sqrt(Player.sizeScale);
