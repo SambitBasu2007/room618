@@ -11,6 +11,88 @@
                background: rgba(255,255,255,.85); pointer-events: none; }
   #hud { position: fixed; top: 10px; left: 10px; font: 12px ui-monospace, Consolas, monospace; white-space: pre;
          background: rgba(0,0,0,.45); padding: 4px 8px; border-radius: 4px; pointer-events: none; }
+  /* Mobile controls */
+  .mobile-btn {
+    position: fixed;
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,.38);
+    border-radius: 50%;
+    background: rgba(25,32,44,.42);
+    backdrop-filter: blur(4px);
+    color: #eee;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 100;
+    user-select: none;
+    touch-action: none;
+  }
+  .mobile-btn:hover, .mobile-btn:active { background: rgba(65,80,105,.58); }
+  #fullscreenBtn {
+    position: fixed;
+    top: max(10px, env(safe-area-inset-top));
+    right: max(10px, env(safe-area-inset-right));
+    z-index: 2000;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.55);
+    border-radius: 50%;
+    background: rgba(35,45,62,.52);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.28);
+  }
+  #fullscreenBtn svg { width: 20px; height: 20px; display: block; }
+  #fullscreenBtn:active { transform: scale(.94); }
+  #useBtn {
+    top: max(68px, calc(env(safe-area-inset-top) + 58px));
+    right: max(10px, env(safe-area-inset-right));
+  }
+  #jumpBtn {
+    bottom: max(20px, env(safe-area-inset-bottom));
+    right: max(22px, env(safe-area-inset-right));
+    width: 72px;
+    height: 72px;
+    font-size: 28px;
+  }
+  #joystick {
+    position: fixed;
+    bottom: max(20px, env(safe-area-inset-bottom));
+    left: max(22px, env(safe-area-inset-left));
+    width: 132px;
+    height: 132px;
+    display: grid;
+    place-items: center;
+    background: rgba(25,32,44,.28);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 50%;
+    pointer-events: auto;
+    z-index: 100;
+    touch-action: none;
+  }
+  #joystick-knob {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(130,170,255,.48);
+    border: 1px solid rgba(255,255,255,.55);
+    pointer-events: none;
+    transform: translate(0, 0);
+    transition: transform .08s ease-out;
+  }
+  @media (min-width: 768px) and (pointer: fine) {
+    #joystick, #jumpBtn, #useBtn { display: none; }
+  }
+  @media (orientation: portrait) and (max-width: 767px) {
+    #overlay { overflow-y: auto; }
+    #menu { width: min(340px, calc(100vw - 32px)); }
+  }
   #overlay { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.65); }
   #menu { background: #26292e; padding: 18px 22px; border-radius: 8px; width: 340px; }
   #menu h2 { margin: 0 0 12px; }
@@ -25,7 +107,7 @@
   #msg { color: #ffd400; min-height: 1.3em; font-size: 12px; line-height: 1.35; }
   .hint { color: #8a8f98; font-size: 12px; line-height: 1.5; margin: 10px 0 0; }
 </style>
-  <script type="module" crossorigin src="./assets/index-BlhaWrA8.js"></script>
+  <script type="module" crossorigin src="./assets/index-Bu3fizn-.js"></script>
 </head>
 <body>
 <div id="crosshair"></div>
@@ -39,5 +121,16 @@
   <button id="play" disabled>Play</button>
   <p class="hint">WASD / arrows move · mouse look · Space jump · Shift run<br />R respawn · [ and ] previous / next world · Esc pause (this menu)</p>
 </div></div>
+
+<!-- Mobile controls -->
+<div id="joystick">
+  <div id="joystick-knob"></div>
+</div>
+<button id="fullscreenBtn" aria-label="Enter fullscreen" title="Enter fullscreen">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"
+    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<button id="useBtn" aria-label="Use">🔧</button>
+<button id="jumpBtn" aria-label="Jump">⤓</button>
 </body>
 </html>

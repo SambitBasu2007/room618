@@ -6,6 +6,7 @@ export interface MoveInput {
   moveZ: number; // +1 = forward
   jump: boolean;
   run: boolean;
+  use: boolean; // "E" key / use button
   yaw: number;
 }
 

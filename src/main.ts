@@ -34,7 +34,33 @@ const input = new FirstPersonInput(renderer.domElement);
 const overlay = $('overlay'), msg = $('msg'), playBtn = $<HTMLButtonElement>('play');
 const sel = $<HTMLSelectElement>('worlds'), scaleEl = $<HTMLInputElement>('scale');
 for (const label of worlds.keys()) sel.add(new Option(label, label));
-playBtn.onclick = () => input.lock();
+
+// Detect if running on mobile
+const isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent) || window.innerWidth < 768;
+
+const fullscreenButton = $<HTMLButtonElement>('fullscreenBtn');
+const fullscreenIcon = fullscreenButton.querySelector('path');
+function updateFullscreenButton() {
+  const fullscreen = document.fullscreenElement !== null;
+  fullscreenButton.setAttribute('aria-label', fullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
+  fullscreenButton.title = fullscreen ? 'Exit fullscreen' : 'Enter fullscreen';
+  fullscreenIcon?.setAttribute('d', fullscreen
+    ? 'M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5'
+    : 'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5');
+}
+fullscreenButton.onclick = () => {
+  if (document.fullscreenElement) void document.exitFullscreen();
+  else void document.documentElement.requestFullscreen().catch(() => {});
+};
+document.addEventListener('fullscreenchange', updateFullscreenButton);
+updateFullscreenButton();
+
+playBtn.onclick = () => {
+  if (isMobile) {
+    void document.documentElement.requestFullscreen().catch(() => {});
+  }
+  input.lock();
+};
 input.onLockChange = (locked) => { overlay.style.display = locked ? 'none' : 'grid'; };
 
 let ready = false, loadId = 0, current = '';
