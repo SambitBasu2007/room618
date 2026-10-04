@@ -104,8 +104,8 @@ export class FirstPersonInput {
 
   private handleLookMove = (e: PointerEvent) => {
     if (e.pointerId !== this.lookPointer) return;
-    this.yaw -= (e.clientX - this.lastLookX) * this.sensitivity * 2;
-    this.pitch = Math.max(-LIMIT, Math.min(LIMIT, this.pitch - (e.clientY - this.lastLookY) * this.sensitivity * 2));
+    this.yaw -= (e.clientX - this.lastLookX) * this.sensitivity * 3.5;
+    this.pitch = Math.max(-LIMIT, Math.min(LIMIT, this.pitch - (e.clientY - this.lastLookY) * this.sensitivity * 3.5));
     this.lastLookX = e.clientX;
     this.lastLookY = e.clientY;
     e.preventDefault();
@@ -212,11 +212,11 @@ export class FirstPersonInput {
     let moveZ = 0;
 
     if (Math.abs(dx) > deadzone) {
-      moveX = dx > 0 ? 1 : -1; // right = positive x, left = negative x
+      moveX = Math.max(-1, Math.min(1, dx / 24)); // right = positive x, left = negative x
     }
 
     if (Math.abs(dy) > deadzone) {
-      moveZ = dy < 0 ? 1 : -1; // push up (negative dy) = forward = positive moveZ
+      moveZ = Math.max(-1, Math.min(1, -dy / 24)); // push up (negative dy) = forward
       // In the player code: moveZ: +1 = forward (KeyW/ArrowUp)
       // Pushing joystick forward (toward top of screen) = negative dy = +1 moveZ ✓
     }
