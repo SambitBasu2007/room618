@@ -35,7 +35,6 @@ const overlay = $('overlay'), msg = $('msg'), playBtn = $<HTMLButtonElement>('pl
 const sel = $<HTMLSelectElement>('worlds'), scaleEl = $<HTMLInputElement>('scale');
 for (const label of worlds.keys()) sel.add(new Option(label, label));
 
-// Detect if running on mobile
 const isMobile = /Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent) || window.innerWidth < 768;
 
 const fullscreenButton = $<HTMLButtonElement>('fullscreenBtn');
@@ -56,10 +55,8 @@ document.addEventListener('fullscreenchange', updateFullscreenButton);
 updateFullscreenButton();
 
 playBtn.onclick = () => {
-  if (isMobile) {
-    void document.documentElement.requestFullscreen().catch(() => {});
-  }
-  input.lock();
+  if (isMobile) input.startMobile();
+  else input.lock();
 };
 input.onLockChange = (locked) => { overlay.style.display = locked ? 'none' : 'grid'; };
 

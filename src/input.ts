@@ -25,9 +25,13 @@ export class FirstPersonInput {
   private useButton = false;
   private jumpButton = false;
   private joystickPointer: number | null = null;
+  private lookPointer: number | null = null;
+  private lastLookX = 0;
+  private lastLookY = 0;
   private readonly joystickEl = document.getElementById('joystick');
   private readonly joystickKnob = document.getElementById('joystick-knob');
   private readonly jumpEl = document.getElementById('jumpBtn');
+  private readonly useEl = document.getElementById('useBtn');
 
   constructor(private dom: HTMLElement) {
     // Keyboard events
@@ -57,6 +61,10 @@ export class FirstPersonInput {
     this.joystickEl?.addEventListener('pointermove', this.handleJoystickMove);
     this.joystickEl?.addEventListener('pointerup', this.handleJoystickEnd);
     this.joystickEl?.addEventListener('pointercancel', this.handleJoystickEnd);
+    this.dom.addEventListener('pointerdown', this.handleLookDown);
+    this.dom.addEventListener('pointermove', this.handleLookMove);
+    this.dom.addEventListener('pointerup', this.handleLookEnd);
+    this.dom.addEventListener('pointercancel', this.handleLookEnd);
     this.jumpEl?.addEventListener('pointerdown', (e) => {
       e.preventDefault();
       this.jumpButton = true;
@@ -64,12 +72,46 @@ export class FirstPersonInput {
     this.jumpEl?.addEventListener('pointerup', () => { this.jumpButton = false; });
     this.jumpEl?.addEventListener('pointercancel', () => { this.jumpButton = false; });
     this.jumpEl?.addEventListener('pointerleave', () => { this.jumpButton = false; });
+    this.useEl?.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      this.useButton = true;
+    });
+    this.useEl?.addEventListener('pointerup', () => { this.useButton = false; });
+    this.useEl?.addEventListener('pointercancel', () => { this.useButton = false; });
+    this.useEl?.addEventListener('pointerleave', () => { this.useButton = false; });
   }
 
   lock() {
     const r: unknown = this.dom.requestPointerLock();
     if (r instanceof Promise) r.catch(() => { /* browsers refuse re-locking right after Esc; click again */ });
   }
+
+  startMobile() {
+    this.locked = true;
+    this.onLockChange?.(true);
+  }
+
+  private handleLookDown = (e: PointerEvent) => {
+    if (!this.locked || e.pointerType === 'mouse') return;
+    this.lookPointer = e.pointerId;
+    this.lastLookX = e.clientX;
+    this.lastLookY = e.clientY;
+    this.dom.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  };
+
+  private handleLookMove = (e: PointerEvent) => {
+    if (e.pointerId !== this.lookPointer) return;
+    this.yaw -= (e.clientX - this.lastLookX) * this.sensitivity * 2;
+    this.pitch = Math.max(-LIMIT, Math.min(LIMIT, this.pitch - (e.clientY - this.lastLookY) * this.sensitivity * 2));
+    this.lastLookX = e.clientX;
+    this.lastLookY = e.clientY;
+    e.preventDefault();
+  };
+
+  private handleLookEnd = (e: PointerEvent) => {
+    if (e.pointerId === this.lookPointer) this.lookPointer = null;
+  };
 
   private handleJoystickDown = (e: PointerEvent) => {
     if (this.locked) return;
